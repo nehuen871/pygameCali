@@ -129,7 +129,7 @@ while True:
         score_message = fontA.render(f'Your Score: {score}',False,(111,196,169))
         score_message_rec = score_message.get_rect(center = (400,330))
         obstacle_rec_list.clear()
-        player_rect.midbottom(80,300)
+        player_rect.midbottom = (80,300)
         player_gravity = 0
 
         secreen.blit(game_text,game_text_rec)
