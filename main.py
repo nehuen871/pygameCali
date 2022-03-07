@@ -1,6 +1,33 @@
 import pygame
 from sys import exit
 from random import randint
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+            super().__init__()
+            player_walk1 = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
+            player_walk2 = pygame.image.load('graphics/player/player_walk_2.png').convert_alpha()
+            self.player_walk = [player_walk1, player_walk2]
+            self.player_index = 0
+            self.player_jump = pygame.image.load('graphics/player/jump.png').convert_alpha()
+
+            self.image = self.player_walk[self.player_index]
+            self.rect = self.image.get_rect(midbottom = (200,300))
+
+            self.gravity = 0
+    def player_imput(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] and self.rect.bottom >= 300:
+            self.gravity = -20
+    def apply_gravity(self):
+        self.gravity += 1
+        self.rect.y += self.gravity
+        if self.rect.bottom >= 300:
+            self.rect.bottom = 300
+    def update(self):
+        self.player_imput()
+        self.apply_gravity()
+
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - star_time
     score_surf = fontA.render(f'Score: {current_time}',False,(64,64,64))
@@ -43,7 +70,10 @@ game_active = False
 star_time = 0
 score = 0
 player_gravity = 0
+
 secreen = pygame.display.set_mode((wdith,hight))
+player = pygame.sprite.GroupSingle()
+player.add(Player())
 fontA = pygame.font.Font('font/Pixeltype.ttf',50)
 pygame.display.set_caption("Corredor")
 clock = pygame.time.Clock()
@@ -148,6 +178,8 @@ while True:
         if player_rect.bottom >= 300 : player_rect.bottom = 300
         player_animation()
         secreen.blit(player_surf, player_rect)
+        player.draw(secreen)
+        player.update()
         #obstacle movement
         obstacle_rec_list = obstacle_movement(obstacle_rec_list)
         #collision
